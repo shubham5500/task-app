@@ -1,4 +1,7 @@
 // todo: Add validations
+
+import {CustomError} from "../utils/error.util";
+
 const listResolver = {
   Query: {
     getList: async (_, {}, {ListModel}) => {
@@ -6,15 +9,25 @@ const listResolver = {
     }
   },
   Mutation: {
-    createList: async (_, {title, boardId, position,}, {ListModel}) => {
-      const newLst = new ListModel({title, position, board: boardId});
-      return newLst.save();
+    createList: async (_, {title, boardId, position,}, {ListModel, BoardModel}) => {
+      const newLst = await ListModel.create({title, position, board: boardId});
+
+      const board = await BoardModel.findById(boardId);
+      if (!board) {
+        throw new CustomError('Board not found', 404);
+      }
+
+      board.lists.push(newLst);
+
+      await board.save();
+
+      return newLst;
     },
     updateList: async (_, {listId, title, boardId, position,}, {BoardModel, ListModel}) => {
       return await ListModel.findOneAndUpdate({_id: listId}, {title, position}).populate('board').exec();
     },
     deleteList: async (_, {listId}, {ListModel}) => {
-      return await ListModel.deleteOne({_id: listId}).exec();
+      return await ListModel.deleteOne({_id: listId}, {new: true}).exec();
     },
   },
 }

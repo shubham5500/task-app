@@ -8,6 +8,7 @@ const boardResolver = {
     },
     getBoard: async (_, { boardId }, {BoardModel}) => {
       const board = await BoardModel.findOne({_id: boardId}).populate('lists').exec();
+      console.log({board})
       if (!board) {
         throw new CustomError('Board not found', 404);
       }
