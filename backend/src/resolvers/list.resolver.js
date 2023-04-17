@@ -11,7 +11,6 @@ const listResolver = {
   Mutation: {
     createList: async (_, {title, boardId, position,}, {ListModel, BoardModel}) => {
       const newLst = await ListModel.create({title, position, board: boardId});
-
       const board = await BoardModel.findById(boardId);
       if (!board) {
         throw new CustomError('Board not found', 404);
