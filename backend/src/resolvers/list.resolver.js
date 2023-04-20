@@ -5,18 +5,16 @@ import {CustomError} from "../utils/error.util";
 const listResolver = {
   Query: {
     getList: async (_, {}, {ListModel}) => {
-      return await ListModel.find({}).populate('board').exec();
+      return await ListModel.find({}).populate('board').populate('cards').exec();
     }
   },
   Mutation: {
     createList: async (_, {title, boardId, position,}, {ListModel, BoardModel}) => {
-      const newLst = await ListModel.create({title, position, board: boardId});
-
       const board = await BoardModel.findById(boardId);
       if (!board) {
         throw new CustomError('Board not found', 404);
       }
-
+      const newLst = await ListModel.create({title, position, board: boardId});
       board.lists.push(newLst);
 
       await board.save();

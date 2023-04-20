@@ -10,6 +10,8 @@ import {BoardModel} from "./models/board.model";
 import {ListModel} from "./models/list.model";
 import {listResolver} from "./resolvers/list.resolver";
 import {errorHandler} from "./utils/error.util";
+import {CardModel} from "./models/card.model";
+import {cardResolver} from "./resolvers/card.resolver";
 
 const app = express();
 
@@ -19,11 +21,12 @@ mongoose.connect('mongodb+srv://admin:admin@task-app-cluster.apqmdns.mongodb.net
 
   const server = new ApolloServer({
     typeDefs: mergeTypeDefs([listTypeDefs, boardTypeDef, cardTypeDef]),
-    resolvers: mergeResolvers([boardResolver, listResolver]),
+    resolvers: mergeResolvers([boardResolver, listResolver, cardResolver]),
     formatError: errorHandler,
     context: {
       BoardModel,
-      ListModel
+      ListModel,
+      CardModel,
     },
   });
 
