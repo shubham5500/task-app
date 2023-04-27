@@ -3,18 +3,25 @@ import {gql} from 'apollo-server-express';
 const userTypeDef = gql(`
   type User {
     id: ID!
-    name: String!
     email: String!
     password: String!
-    boards: [Board]!
+    boards: [Board]
+    token: String
   }
   
   type Query {
     getUser(userId: ID!): User
+    getUsers: [User]
+  }
+  
+  type AuthPayload {
+    token: ID!
+    user: User
   }
   
   type Mutation {
-       createUser(name: String!, email: String!, password: String!): User
+     register(email: String!, password: String!): AuthPayload
+     login(email: String!, password: String!): AuthPayload
   }
 `)
 

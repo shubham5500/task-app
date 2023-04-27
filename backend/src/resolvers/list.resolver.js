@@ -4,7 +4,11 @@ import {CustomError} from "../utils/error.util";
 
 const listResolver = {
   Query: {
-    getList: async (_, {}, {ListModel}) => {
+    getList: async (_, {}, {ListModel, user}) => {
+      if (!user) {
+        throw new CustomError('Not Authenticated!', 401)
+      }
+
       return await ListModel.find({}).populate('board').populate('cards').exec();
     }
   },
