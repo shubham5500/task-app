@@ -1,13 +1,13 @@
 import React from 'react';
-import CreateBoard from "../../components/CreateBoard";
+import List from "../components/List";
+import Board from "../components/Board";
 
 export default function Home() {
   return (
-    <main
-      className={``}
-    >
+    <main>
       <div className="w-1/2 mx-auto">
-        <CreateBoard/>
+        {/*<CreateBoard/>*/}
+        <Board/>
       </div>
     </main>
   )
