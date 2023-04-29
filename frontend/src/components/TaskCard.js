@@ -1,19 +1,24 @@
-import {Draggable} from "react-beautiful-dnd";
+import React from "react";
+import { Draggable } from 'react-beautiful-dnd';
 
-export default function TaskCard({ card, index }) {
+const TaskCard = ({ task, index }) => {
+  console.log({task})
   return (
-    <Draggable draggableId={card.id.toString()} index={index}>
-      {(provided) => (
+    <Draggable draggableId={task.id} index={index}>
+      {(provided, snapshot) => (
         <div
+          className={`px-4 py-2 bg-white shadow-md rounded-md mb-3 ${
+            snapshot.isDragging ? 'primary-light-100' : ''
+          }`}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          className="bg-white rounded-md shadow-md p-4 mb-4"
         >
-          <p className="font-medium">{card.title}</p>
-          <p className="text-sm text-gray-500 mt-2">{card.description}</p>
+          <p className="font-medium">{task.title}</p>
         </div>
       )}
     </Draggable>
   );
-}
+};
+
+export default TaskCard;

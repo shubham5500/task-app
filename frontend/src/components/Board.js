@@ -14,6 +14,7 @@ const Board = () => {
           { id: "card-2", title: "Task 2" },
           { id: "card-3", title: "Task 3" },
         ],
+        position: 1,
       },
       {
         id: "list-2",
@@ -22,6 +23,7 @@ const Board = () => {
           { id: "card-4", title: "Task 4" },
           { id: "card-5", title: "Task 5" },
         ],
+        position: 2,
       },
       {
         id: "list-3",
@@ -31,6 +33,7 @@ const Board = () => {
           { id: "card-7", title: "Task 7" },
           { id: "card-8", title: "Task 8" },
         ],
+        position: 3,
       },
     ],
   });
@@ -111,11 +114,20 @@ const Board = () => {
   console.log({p: board.lists})
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <div className="flex space-x-4 p-4">
-        {board.lists.map((list, index) => (
-          <List key={list.id} list={list} index={index} />
-        ))}
-      </div>
+      <Droppable droppableId="board" direction="horizontal" type="list">
+        {(provided) => (
+          <div
+            className="flex"
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >
+            {board.lists.map((list, index) => (
+              <List key={list.id} list={list} index={index} />
+            ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
     </DragDropContext>
   );
 }
