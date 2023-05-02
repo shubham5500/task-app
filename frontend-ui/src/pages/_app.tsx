@@ -1,6 +1,8 @@
 import '../styles/globals.css';
 import {useEffect, useState} from "react";
 import Layout from "../components/Layout";
+import { Provider } from 'react-redux';
+import {store} from "../store";
 
 export default function App({ Component, pageProps }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -13,7 +15,9 @@ export default function App({ Component, pageProps }) {
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
   };
-  return <Layout classes={`app ${isDarkMode ? 'dark' : ''}`}>
-    <Component {...pageProps} />
-  </Layout>
+  return <Provider store={store}>
+    <Layout classes={`app ${isDarkMode ? 'dark' : ''}`}>
+      <Component {...pageProps} />
+    </Layout>
+  </Provider>
 }

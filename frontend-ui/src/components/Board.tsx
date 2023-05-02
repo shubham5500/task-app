@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { useSelector, useDispatch } from 'react-redux'
+
 import List from "./List";
 
 
 const Board = () => {
+  const boards = useSelector((state) => state.boardReducer.boards)
+  console.log({boards})
   const [board, setBoard] = useState({
     lists: [
       {
@@ -111,7 +115,6 @@ const Board = () => {
       }
     }
   };
-  console.log({p: board.lists})
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable droppableId="board" direction="horizontal" type="list">
