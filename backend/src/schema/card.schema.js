@@ -1,12 +1,12 @@
 import {gql} from 'apollo-server-express';
 
-const cardTypeDef = gql(`
+const cardTypeDef = gql`
   type Card {
-    id: ID!
+    _id: ID!
     title: String!
     description: String
     position: Int!
-    list: List!
+    listId: ID!
   }
   
   type Query {
@@ -27,7 +27,7 @@ const cardTypeDef = gql(`
      
     deleteCard(cardId: ID!, listId: ID!): Card
   }
-`);
+`;
 
 export {
   cardTypeDef

@@ -5,6 +5,10 @@ const commentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  card: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Card',
+  },
   postedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

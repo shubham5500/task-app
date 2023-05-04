@@ -59,7 +59,6 @@ const authMiddleware = async (req, res, next) => {
       return next();
     }
     isAuth = true;
-    console.log('AYAYA', isAuth)
     req.isAuth = isAuth;
     req.user = user; // Add user to request object
     next(); // Move on to next middleware or resolver
@@ -67,7 +66,7 @@ const authMiddleware = async (req, res, next) => {
     res.status(401).json({ message: 'Authentication failed' }); // Return error if authentication failed
   }
 };
-app.use(authMiddleware)
+// app.use(authMiddleware)
 const port = process.env.PORT;
 
 const server = new ApolloServer({

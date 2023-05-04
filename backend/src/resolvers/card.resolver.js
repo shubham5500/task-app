@@ -6,21 +6,12 @@ export const cardResolver = {
       return await CardModel.findById(cardId).populate('list').exec();
     },
     getCards: async (_, {}, {ListModel, CardModel, BoardModel}) => {
-      return await CardModel.find({}).populate('list').exec();
+      return await CardModel.find({});
     },
   },
   Mutation: {
     createCard: async (_, {title, description, listId,}, {ListModel, CardModel, BoardModel}) => {
-      const list = await ListModel.findById(listId).exec();
-      if (!list) {
-        throw new CustomError('List not fount', 404);
-      }
-
-      const card = await CardModel.create({title, description, list: listId});
-
-      list.cards.push(card);
-      await list.save();
-      return card;
+      return await CardModel.create({title, description, listId});
     },
     updateCard: async (_, {cardId, title, description, sourceListId, desListId}, {ListModel, CardModel, BoardModel}) => {
       const card = await CardModel.findOneAndUpdate(cardId, {list: desListId}, {new: true});
