@@ -1,5 +1,3 @@
-import {CustomError} from "../utils/error.util";
-
 export const cardResolver = {
   Query: {
     getCard: async (_, {cardId}, {ListModel, CardModel, BoardModel}) => {
@@ -10,14 +8,27 @@ export const cardResolver = {
     },
   },
   Mutation: {
-    createCard: async (_, {title, description, listId,}, {ListModel, CardModel, BoardModel}) => {
-      return await CardModel.create({title, description, listId});
+    createCard: async (_, {title, description, listId, position}, {ListModel, CardModel, BoardModel}) => {
+      return await CardModel.create({title, description, listId, position});
     },
-    updateCard: async (_, {cardId, title, description, sourceListId, desListId}, {ListModel, CardModel, BoardModel}) => {
-      const card = await CardModel.findOneAndUpdate(cardId, {list: desListId}, {new: true});
-      await ListModel.findOneAndUpdate({_id: sourceListId}, {$pull: {cards: cardId}});
-      await ListModel.findOneAndUpdate({_id: desListId}, {$push: {cards: cardId}});
-      return card;
+    updateCard: async (_, {cardId, title, sourceListId, destinationListId, sourcePosition, destinationPosition}, {ListModel, CardModel, BoardModel}) => {
+      console.log({cardId, title, sourceListId, destinationListId, sourcePosition, destinationPosition})
+      const sourceCardList = await CardModel.find({listId: sourceListId, position: {$gt: sourcePosition}});
+      const destinationCardList = await CardModel.find({listId: destinationListId, position: {$gte: destinationPosition}});
+      console.log({sourceCardList})
+      console.log({destinationCardList})
+
+      for (let i = 0; i < sourceCardList.length; i++) {
+        const card = sourceCardList[i];
+        card.position--;
+        await card.save();
+      }
+      for (let i = 0; i < destinationCardList.length; i++) {
+        const card = destinationCardList[i];
+        card.position++;
+        await card.save();
+      }
+      return CardModel.findByIdAndUpdate(cardId, {listId: destinationListId, position: destinationPosition});
     },
     deleteCard: async (_, {cardId, listId}, {ListModel, CardModel, BoardModel}) => {
       try {

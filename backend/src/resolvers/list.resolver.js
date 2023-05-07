@@ -23,7 +23,7 @@ const listResolver = {
     },
     updateList: async (_, {boardId, listId, title}, {ListModel, BoardModel}) => {
       try {
-        const res = await ListModel.findOneAndUpdate({_id: listId}, {title, position});
+        const res = await ListModel.findOneAndUpdate({_id: listId}, {title});
         if (!res) {
           throw new Error('Id not found');
         }
