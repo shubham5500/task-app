@@ -13,20 +13,49 @@ export const cardResolver = {
     },
     updateCard: async (_, {cardId, title, sourceListId, destinationListId, sourcePosition, destinationPosition}, {ListModel, CardModel, BoardModel}) => {
       console.log({cardId, title, sourceListId, destinationListId, sourcePosition, destinationPosition})
-      const sourceCardList = await CardModel.find({listId: sourceListId, position: {$gt: sourcePosition}});
-      const destinationCardList = await CardModel.find({listId: destinationListId, position: {$gte: destinationPosition}});
-      console.log({sourceCardList})
-      console.log({destinationCardList})
+      let sourceCardList;
+      let destinationCardList;
+      // when moving the card to same list
+      if (sourceListId === destinationListId) {
+        if (sourcePosition > destinationPosition) {
+          // when moving card from low to high position
+          sourceCardList = await CardModel.find({
+            listId: sourceListId,
+            position: {$lt: sourcePosition, $gte: destinationPosition}
+          });
+          for (let i = 0; i < sourceCardList.length; i++) {
+            const card = sourceCardList[i];
+            card.position++;
+            await card.save();
+          }
+        }
+        // when moving the card to another list
+        else {
+          // when moving card from high to low position
+          sourceCardList = await CardModel.find({
+            listId: sourceListId,
+            position: {$gt: sourcePosition, $lte: destinationPosition}
+          });
+          for (let i = 0; i < sourceCardList.length; i++) {
+            const card = sourceCardList[i];
+            card.position--;
+            await card.save();
+          }
+        }
+      } else {
+        sourceCardList = await CardModel.find({listId: sourceListId, position: {$gt: sourcePosition}});
+        destinationCardList = await CardModel.find({listId: destinationListId, position: {$gte: destinationPosition}});
+        for (let i = 0; i < sourceCardList.length; i++) {
+          const card = sourceCardList[i];
+          card.position--;
+          await card.save();
+        }
+        for (let i = 0; i < destinationCardList.length; i++) {
+          const card = destinationCardList[i];
+          card.position++;
+          await card.save();
+        }
 
-      for (let i = 0; i < sourceCardList.length; i++) {
-        const card = sourceCardList[i];
-        card.position--;
-        await card.save();
-      }
-      for (let i = 0; i < destinationCardList.length; i++) {
-        const card = destinationCardList[i];
-        card.position++;
-        await card.save();
       }
       return CardModel.findByIdAndUpdate(cardId, {listId: destinationListId, position: destinationPosition});
     },
