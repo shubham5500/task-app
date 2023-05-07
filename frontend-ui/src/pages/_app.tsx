@@ -1,10 +1,10 @@
 import '../styles/globals.css';
 import {useEffect, useState} from "react";
 import Layout from "../components/Layout";
-import { Provider } from 'react-redux';
-import {store} from "../store";
+import { ApolloProvider } from '@apollo/client';
+import { client } from '@/graphql';
 
-export default function App({ Component, pageProps }) {
+export default function App({ Component, pageProps }: any) {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
@@ -15,9 +15,9 @@ export default function App({ Component, pageProps }) {
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
   };
-  return <Provider store={store}>
+  return <ApolloProvider client={client}>
     <Layout classes={`app ${isDarkMode ? 'dark' : ''}`}>
       <Component {...pageProps} />
     </Layout>
-  </Provider>
+  </ApolloProvider>
 }

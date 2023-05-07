@@ -1,138 +1,120 @@
-import React, { useState } from "react";
+import React, { FC, useEffect, useState } from "react";
+import NoSSR from "react-no-ssr";
+import { cloneDeep } from "lodash";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { useSelector, useDispatch } from 'react-redux'
+import ListComponent from "./List";
+import Loading from "./Loading";
+import { List } from "@/interfaces";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_BOARD, UPDATE_BOARD } from "@/graphql/queries/board.query";
+import { UPDATE_CARD } from "@/graphql/queries/card.query";
+import { UPDATE_LIST } from "@/graphql/queries/list.query";
+import ErrorComponent from "./Error";
 
-import List from "./List";
+const BoardComponent = () => {
 
+  const { loading, error, data } = useQuery(GET_BOARD);
 
-const Board = () => {
-  const boards = useSelector((state) => state.boardReducer.boards)
-  console.log({boards})
-  const [board, setBoard] = useState({
-    lists: [
+  const [
+    updateBooard,
+    { loading: loadingUpdate, error: updateBoardError, data: updatedData },
+  ] = useMutation(UPDATE_BOARD);
+
+  const [
+    updateCard,
+    {
+      loading: loadingUpdateCard,
+      error: updateCardError,
+      data: updateCardData,
+    },
+  ] = useMutation(UPDATE_CARD, {
+    refetchQueries: [
       {
-        id: "list-1",
-        title: "To Do",
-        cards: [
-          { id: "card-1", title: "Task 1" },
-          { id: "card-2", title: "Task 2" },
-          { id: "card-3", title: "Task 3" },
-        ],
-        position: 1,
-      },
-      {
-        id: "list-2",
-        title: "In Progress",
-        cards: [
-          { id: "card-4", title: "Task 4" },
-          { id: "card-5", title: "Task 5" },
-        ],
-        position: 2,
-      },
-      {
-        id: "list-3",
-        title: "Done",
-        cards: [
-          { id: "card-6", title: "Task 6" },
-          { id: "card-7", title: "Task 7" },
-          { id: "card-8", title: "Task 8" },
-        ],
-        position: 3,
+        query: GET_BOARD,
       },
     ],
   });
 
-  const handleDragEnd = (result) => {
-    const { destination, source, draggableId, type } = result;
+  const boardData = data && cloneDeep(data.getBoards[0]);
 
+  const handleDragEnd = (result: {
+    destination: any;
+    source: any;
+    draggableId: any;
+    type: any;
+  }) => {
+    const { destination, source, draggableId, type } = result;
+    const initialPosition = source.index;
+    const finalPosition = destination.index;
     if (!destination) {
       return;
     }
 
-    if (destination.droppableId === source.droppableId && destination.index === source.index) {
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
       return;
     }
 
-    if (type === "list") {
-      const newLists = Array.from(board.lists);
-      const [removedList] = newLists.splice(source.index, 1);
-      newLists.splice(destination.index, 0, removedList);
-
-      setBoard({
-        ...board,
-        lists: newLists,
+    if (type === "LIST") {
+      updateBooard({
+        variables: {
+          boardId: boardData._id,
+          listId: draggableId,
+          sourcePosition: initialPosition,
+          destinationPosition: finalPosition,
+        },
       });
-    } else {
-      const sourceList = board.lists.find((list) => list.id === source.droppableId);
-      const destinationList = board.lists.find((list) => list.id === destination.droppableId);
-
-      if (sourceList === destinationList) {
-        const newCards = Array.from(sourceList.cards);
-        const [removedCard] = newCards.splice(source.index, 1);
-        newCards.splice(destination.index, 0, removedCard);
-
-        const newLists = board.lists.map((list) => {
-          if (list.id === sourceList.id) {
-            return {
-              ...list,
-              cards: newCards,
-            };
-          }
-          return list;
-        });
-
-        setBoard({
-          ...board,
-          lists: newLists,
-        });
-      } else {
-        const sourceCards = Array.from(sourceList.cards);
-        const [removedCard] = sourceCards.splice(source.index, 1);
-
-        const destinationCards = Array.from(destinationList.cards);
-        destinationCards.splice(destination.index, 0, removedCard);
-
-        const newLists = board.lists.map((list) => {
-          if (list.id === sourceList.id) {
-            return {
-              ...list,
-              cards: sourceCards,
-            };
-          }
-          if (list.id === destinationList.id) {
-            return {
-              ...list,
-              cards: destinationCards,
-            };
-          }
-          return list;
-        });
-
-        setBoard({
-          ...board,
-          lists: newLists,
-        });
-      }
+    } else if (type === "CARD") {
+      updateCard({
+        variables: {
+          cardId: draggableId,
+          sourceListId: source.droppableId,
+          destinationListId: destination.droppableId,
+          sourcePosition: initialPosition,
+          destinationPosition: finalPosition,
+        },
+      });
     }
   };
-  return (
-    <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId="board" direction="horizontal" type="list">
-        {(provided) => (
-          <div
-            className="flex"
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-          >
-            {board.lists.map((list, index) => (
-              <List key={list.id} list={list} index={index} />
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
-  );
-}
 
-export default Board;
+  if (loading || loadingUpdate || loadingUpdateCard) {
+    return <Loading />;
+  }
+
+  if (error || updateBoardError || updateCardError) {
+    return <ErrorComponent />;
+  }
+
+  const sortFn = (a: List, b: List) => {
+    return a.position - b.position;
+  };
+
+  return (
+    <NoSSR onSSR={<Loading />}>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="board" direction="horizontal" type="LIST">
+          {(provided: any) => (
+            <div
+              className="flex"
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {boardData.lists.sort(sortFn).map((list: List) => (
+                <ListComponent
+                  key={list._id}
+                  list={list}
+                  index={list.position}
+                />
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    </NoSSR>
+  );
+};
+
+export default BoardComponent;

@@ -1,11 +1,11 @@
 import React from 'react';
 
-function Loading() {
+function ErrorComponent() {
     return (
         <div>
-            Loading...
+            Error
         </div>
     );
 }
 
-export default Loading;
+export default ErrorComponent;

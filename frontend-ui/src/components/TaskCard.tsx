@@ -1,10 +1,17 @@
-import React from "react";
+
+import { Card } from "@/interfaces";
+import React, { FC } from "react";
 import { Draggable } from 'react-beautiful-dnd';
 
-const TaskCard = ({ task, index }) => {
+interface pageProps {
+  task: Card,
+  index: number
+}
+
+const TaskCard: FC<pageProps> = ({ task, index }) => {
   return (
-    <Draggable draggableId={task.id} index={index}>
-      {(provided, snapshot) => (
+    <Draggable draggableId={task._id} index={index}>
+      {(provided: any, snapshot: any) => (
         <div
           className={`px-4 py-2 bg-white shadow-md rounded-md mb-3 ${
             snapshot.isDragging ? 'primary-light-100' : ''
@@ -13,7 +20,10 @@ const TaskCard = ({ task, index }) => {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          <p className="font-medium">{task.title}</p>
+          <p style={{color: 'blue'}}>{task._id}</p>
+          <p className="font-medium">{task.title}
+          <span style={{color: 'red', margin: '0 10px', fontSize: '20px'}}>{task.position}</span>
+          </p>
         </div>
       )}
     </Draggable>
