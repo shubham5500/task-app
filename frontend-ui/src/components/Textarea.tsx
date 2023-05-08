@@ -13,7 +13,7 @@ interface pageProps {
 }
 
 
-const Input: FC<pageProps> = ({
+const Textarea: FC<pageProps> = ({
                                   label,
                                   name,
                                   value,
@@ -28,7 +28,7 @@ const Input: FC<pageProps> = ({
             {label && <label {...inputProps} htmlFor={name} className="block text-gray-700 font-bold mb-2">
                 {label}
             </label>}
-            <input
+            <textarea
                 className="block w-full border-0 hover:border-0 focus:border-0 rounded px-2 py-2"
                 id={name}
                 name={name}
@@ -42,4 +42,4 @@ const Input: FC<pageProps> = ({
     );
 };
 
-export default Input;
+export default Textarea;

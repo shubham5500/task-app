@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import TaskCard from './TaskCard';
 import { Card, List } from '@/interfaces';
+import AddTask from "@/components/AddTask";
 
 interface pageProps {
   list: List, 
@@ -27,11 +28,14 @@ const List: FC<pageProps> = ({ list, index }) => {
           </div>
           <Droppable droppableId={list._id} type="CARD">
             {(provided: any) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
+              <div {...provided.droppableProps}
+              className={"min-h-full"}
+              ref={provided.innerRef}>
                 {list.cards.sort(sortFn).map((task, index) => (
                   <TaskCard key={task._id} task={task} index={task.position} />
                 ))}
                 {provided.placeholder}
+                <AddTask/>
               </div>
             )}
           </Droppable>

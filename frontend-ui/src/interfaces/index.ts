@@ -15,4 +15,6 @@ export interface Card {
     _id?: string,
     title: string,
     position: number,
+    createdAt: number,
+    updatedAt: number,
 }

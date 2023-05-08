@@ -16,9 +16,13 @@ const BoardComponent = () => {
   const { loading, error, data } = useQuery(GET_BOARD);
 
   const [
-    updateBooard,
+    updateBoard,
     { loading: loadingUpdate, error: updateBoardError, data: updatedData },
-  ] = useMutation(UPDATE_BOARD);
+  ] = useMutation(UPDATE_BOARD, {
+    refetchQueries: [ {
+      query: GET_BOARD,
+    },]
+  });
 
   const [
     updateCard,
@@ -35,17 +39,18 @@ const BoardComponent = () => {
     ],
   });
 
+
   const boardData = data && cloneDeep(data.getBoards[0]);
 
-  const handleDragEnd = (result: {
+  const handleDragEnd = async (result: {
     destination: any;
     source: any;
     draggableId: any;
     type: any;
   }) => {
+    
     const { destination, source, draggableId, type } = result;
-    const initialPosition = source.index;
-    const finalPosition = destination.index;
+
     if (!destination) {
       return;
     }
@@ -57,8 +62,11 @@ const BoardComponent = () => {
       return;
     }
 
+    const initialPosition = source.index;
+    const finalPosition = destination.index;
+
     if (type === "LIST") {
-      updateBooard({
+     await updateBoard({
         variables: {
           boardId: boardData._id,
           listId: draggableId,
@@ -67,7 +75,7 @@ const BoardComponent = () => {
         },
       });
     } else if (type === "CARD") {
-      updateCard({
+      await updateCard({
         variables: {
           cardId: draggableId,
           sourceListId: source.droppableId,
