@@ -1,15 +1,15 @@
 import React, {FC} from 'react';
+import {useFormContext} from "react-hook-form";
 
 interface pageProps {
     label?: string,
     name: string,
     value?: string,
     type?: string,
-    placeholder?: string,
     inputProps?: any,
     labelProps?: any,
-
-    onChange(): any,
+    rules?: {},
+    placeholder?: string,
 }
 
 
@@ -17,27 +17,29 @@ const Input: FC<pageProps> = ({
                                   label,
                                   name,
                                   value,
-                                  onChange,
                                   type = 'text',
                                   placeholder,
                                   inputProps,
                                   labelProps,
+                                  rules,
                               }) => {
+
+    const { register, formState: {errors} } = useFormContext();
     return (
         <div className="mb-4">
-            {label && <label {...inputProps} htmlFor={name} className="block text-gray-700 font-bold mb-2">
+            {label && <label {...labelProps} htmlFor={name} className="block text-gray-700 font-bold mb-2">
                 {label}
             </label>}
             <input
                 className="block w-full border-0 hover:border-0 focus:border-0 rounded px-2 py-2"
                 id={name}
-                name={name}
+                {...register(name, rules)}
                 type={type}
                 placeholder={placeholder}
                 value={value}
-                onChange={onChange}
                 {...inputProps}
             />
+            <p className="text-rose-600 text-lg">{errors[name]?.message}</p>
         </div>
     );
 };

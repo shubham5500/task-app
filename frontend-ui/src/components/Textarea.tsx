@@ -1,4 +1,5 @@
 import React, {FC} from 'react';
+import {useFormContext} from "react-hook-form";
 
 interface pageProps {
     label?: string,
@@ -7,22 +8,24 @@ interface pageProps {
     type?: string,
     placeholder?: string,
     inputProps?: any,
+    rules?: any,
     labelProps?: any,
-
-    onChange(): any,
 }
 
 
 const Textarea: FC<pageProps> = ({
-                                  label,
-                                  name,
-                                  value,
-                                  onChange,
-                                  type = 'text',
-                                  placeholder,
-                                  inputProps,
-                                  labelProps,
-                              }) => {
+                                     label,
+                                     name,
+                                     value,
+                                     type = 'text',
+                                     placeholder,
+                                     inputProps,
+                                     labelProps,
+                                     rules = {},
+                                 }) => {
+
+    const {register, formState: {errors}} = useFormContext();
+
     return (
         <div className="mb-4">
             {label && <label {...inputProps} htmlFor={name} className="block text-gray-700 font-bold mb-2">
@@ -31,13 +34,13 @@ const Textarea: FC<pageProps> = ({
             <textarea
                 className="block w-full border-0 hover:border-0 focus:border-0 rounded px-2 py-2"
                 id={name}
-                name={name}
-                type={type}
+                {...register(name, rules)}
                 placeholder={placeholder}
                 value={value}
-                onChange={onChange}
                 {...inputProps}
             />
+            <p className="text-rose-600 text-lg">{errors[name]?.message}</p>
+
         </div>
     );
 };

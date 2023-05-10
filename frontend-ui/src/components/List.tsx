@@ -24,7 +24,7 @@ const List: FC<pageProps> = ({ list, index }) => {
           className="flex-1 border rounded-md shadow-md p-4 m-4 bg-white dark:bg-gray-800"
         >
           <div className="flex justify-between items-center mb-4" {...provided.dragHandleProps}>
-            <h2 className="text-lg font-medium text-gray-800 dark:text-gray-100">{list.title} <u>{list._id}</u></h2>
+            <h2 className="text-lg font-medium text-gray-800 dark:text-gray-100">{list.title}</h2>
           </div>
           <Droppable droppableId={list._id} type="CARD">
             {(provided: any) => (
@@ -32,10 +32,10 @@ const List: FC<pageProps> = ({ list, index }) => {
               className={"min-h-full"}
               ref={provided.innerRef}>
                 {list.cards.sort(sortFn).map((task, index) => (
-                  <TaskCard key={task._id} task={task} index={task.position} />
+                  <TaskCard key={task._id} task={task} index={task.position}/>
                 ))}
                 {provided.placeholder}
-                <AddTask/>
+                <AddTask listId={list._id} position={list.cards.length}/>
               </div>
             )}
           </Droppable>
