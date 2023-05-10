@@ -10,6 +10,7 @@ import { GET_BOARD, UPDATE_BOARD } from "@/graphql/queries/board.query";
 import { UPDATE_CARD } from "@/graphql/queries/card.query";
 import { UPDATE_LIST } from "@/graphql/queries/list.query";
 import ErrorComponent from "./Error";
+import AddList from "@/components/AddList";
 
 const BoardComponent = () => {
 
@@ -117,6 +118,7 @@ const BoardComponent = () => {
                 />
               ))}
               {provided.placeholder}
+              <AddList position={boardData.lists.length}/>
             </div>
           )}
         </Droppable>

@@ -17,7 +17,7 @@ const TaskCard: FC<pageProps> = ({ task:{_id, title, createdAt}, index }) => {
     <Draggable draggableId={_id} index={index}>
       {(provided: any, snapshot: any) => (
         <div
-          className={`bg-white  shadow-md rounded-lg overflow-hidden hover:shadow-xl transition duration-300 ease-in-out mb-4 ${
+          className={`bg-white w-[400px] shadow-md rounded-lg overflow-hidden hover:shadow-xl transition duration-300 ease-in-out mb-4 ${
             snapshot.isDragging ? 'primary-light-100' : ''
           }`}
           {...provided.draggableProps}

@@ -5,9 +5,9 @@ import CreateBoard from '@/components/CreateBoard';
 
 export default function Home() {
   return (
-    <main>
+    <>
       {/* <CreateBoard/> */}
       <Board/>
-    </main>
+    </>
   )
 }
