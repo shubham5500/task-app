@@ -21,7 +21,7 @@ const AddList: FC<pageProps> = ({position}) => {
         },]
     })
 
-    const submit = async ({title}) => {
+    const submit = async ({title} : any) => {
         await addList({
             variables: {
                 "boardId": "6452bae23d86e209443930e8",

@@ -1,6 +1,12 @@
 import { HiViewBoards, HiOutlineArchive } from "react-icons/hi";
+import React, {FC} from "react";
 
-const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
+interface pageProps {
+    isSidebarOpen?: boolean,
+    toggleSidebar?(): void,
+}
+
+const Sidebar: FC<pageProps> = ({ isSidebarOpen, toggleSidebar }) => {
   return (
     <aside className={`relative flex-shrink-0 w-64 shadow ${isSidebarOpen ? '' : 'hidden'} sm:block`}>
       <div className="h-full py-4 flex flex-col justify-between">
@@ -26,7 +32,12 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
 export default Sidebar;
 
 
-const SideBarItem = ({text, icon}) =>{
+interface SideBarItemPros {
+    text: string,
+    icon: JSX.Element,
+}
+
+const SideBarItem: FC<SideBarItemPros> = ({text, icon}) =>{
   return (<>
     <a href="#" className="flex items-center py-3 px-4 dark:text-text-primary hover:bg-text-light dark:hover:bg-primary font-bold">
       {icon}

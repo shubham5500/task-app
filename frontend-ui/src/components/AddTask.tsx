@@ -22,7 +22,7 @@ const AddTask: FC<pageProps> = ({listId, position}) => {
         },]
     })
 
-    const onSubmit = async ({title, description}) => {
+    const onSubmit = async ({title, description} : any) => {
         const payload = {
             listId,
             position,
@@ -37,7 +37,7 @@ const AddTask: FC<pageProps> = ({listId, position}) => {
 
     return (
         <div
-            className={`w-[400px] bg-grey bg-gray-200 rounded-lg overflow-hidden transition duration-300 ease-in-out mb-4`}
+            className={`w-[400px] bg-grey bg-gray-200 rounded-lg overflow-hidden transition duration-300 ease-in-out mx-3 mb-4`}
         >
             <div className="px-4 py-3">
                 <h2 className="text-lg font-medium text-gray-800">Add Card</h2>
