@@ -7,6 +7,8 @@ const cardTypeDef = gql`
         description: String
         position: Int!
         listId: ID!
+        createdAt: String
+        updatedAt: String
     }
 
     type Query {
@@ -17,16 +19,17 @@ const cardTypeDef = gql`
     type Mutation {
         createCard(title: String!, description: String!, listId: ID!, position: Int!): Card
 
-        updateCard(cardId: ID!,
+        updateCard(
+            cardId: ID!,
             title: String,
             description: String,
-            sourcePosition: Int!,
-            destinationPosition: Int!,
-            sourceListId: ID!,
-            destinationListId: ID!
+            sourcePosition: Int,
+            destinationPosition: Int,
+            sourceListId: ID,
+            destinationListId: ID
         ): Card
 
-        deleteCard(cardId: ID!, listId: ID!): Card
+        deleteCard(cardId: ID!, listId: ID!): [Card]
     }
 `;
 

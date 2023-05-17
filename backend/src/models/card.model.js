@@ -18,7 +18,7 @@ const cardSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'List',
   },
-});
+}, {timestamps: true});
 
 const CardModel = mongoose.model('Card', cardSchema);
 

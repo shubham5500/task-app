@@ -1,7 +1,9 @@
+import {CustomError} from "../utils/error.util";
+
 export const cardResolver = {
   Query: {
     getCard: async (_, {cardId}, {ListModel, CardModel, BoardModel}) => {
-      return await CardModel.findById(cardId).populate('list').exec();
+      return CardModel.findById(cardId);
     },
     getCards: async (_, {}, {ListModel, CardModel, BoardModel}) => {
       return await CardModel.find({});
@@ -11,8 +13,24 @@ export const cardResolver = {
     createCard: async (_, {title, description, listId, position}, {ListModel, CardModel, BoardModel}) => {
       return await CardModel.create({title, description, listId, position});
     },
-    updateCard: async (_, {cardId, title, sourceListId, destinationListId, sourcePosition, destinationPosition}, {ListModel, CardModel, BoardModel}) => {
-      console.log({cardId, title, sourceListId, destinationListId, sourcePosition, destinationPosition})
+    updateCard: async (_, {
+                         cardId,
+                         title,
+                         description,
+                         sourceListId,
+                         destinationListId,
+                         sourcePosition,
+                         destinationPosition
+                       },
+                       {
+                         ListModel,
+                         CardModel,
+                         BoardModel
+                       }) => {
+
+      if (title && description) {
+        return CardModel.findByIdAndUpdate(cardId, {title, description});
+      }
       let sourceCardList;
       let destinationCardList;
       // when moving the card to same list
@@ -59,14 +77,23 @@ export const cardResolver = {
       }
       return CardModel.findByIdAndUpdate(cardId, {listId: destinationListId, position: destinationPosition});
     },
-    deleteCard: async (_, {cardId, listId}, {ListModel, CardModel, BoardModel}) => {
+    deleteCard: async (_, {cardId, listId}, {CardModel}) => {
+      if (!listId) {
+        throw new Error('Please send list ID');
+      }
       try {
-        const deletedCard = CardModel.findByIdAndDelete(cardId);
-        await ListModel.findByIdAndUpdate(listId, {$pull: {cards: cardId}});
+        const deletingCard = await CardModel.findById(cardId);
+        const cards = await CardModel.find({listId, position: {$gt: deletingCard.position}});
 
-        return deletedCard;
+        for (let i = 0; i < cards.length; i++) {
+          const cardItem = cards[i];
+          cardItem.position--;
+          cardItem.save();
+        }
+        await CardModel.findByIdAndRemove(cardId);
+        return cards;
       } catch (e) {
-
+        throw new CustomError(e.message, 400);
       }
     },
   },

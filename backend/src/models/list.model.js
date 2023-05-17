@@ -13,7 +13,7 @@ const listSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Board',
   },
-});
+}, {timestamps: true});
 
 const ListModel = mongoose.model('List', listSchema);
 

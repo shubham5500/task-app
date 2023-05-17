@@ -15,6 +15,6 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Board',
   }]
-})
+}, {timestamps: true})
 
 export const UserModel = mongoose.model('User', userSchema);
