@@ -1,28 +1,25 @@
 import React, {FC, useEffect} from 'react';
+import {isEmpty} from 'lodash';
 import Input from "@/components/Input";
 import Textarea from "@/components/Textarea";
 import Button from "@/components/Button";
 import {FormProvider, useForm} from "react-hook-form";
 import {useLazyQuery, useMutation, useQuery} from "@apollo/client";
-import {CREATE_CARD, GET_CARD_DETAIL} from "@/graphql/queries/card.query";
+import {CREATE_CARD, GET_CARD_DETAIL, UPDATE_CARD} from "@/graphql/queries/card.query";
 import {GET_BOARD} from "@/graphql/queries/board.query";
 import {showToast} from "@/components/Toast";
+import {Card} from "@/interfaces";
 
 interface pageProps {
     listId: string,
-    cardId?: string | undefined,
     position: number,
+    toggleModal?(): void,
+    cardDetail?: Card,
 }
 
-const AddTask: FC<pageProps> = ({listId, position, cardId}) => {
+const AddOrUpdateTaskForm: FC<pageProps> = ({listId, position, cardDetail, toggleModal = () => {}}) => {
 
     const methods = useForm();
-
-    const [getCardDetail, {loading, data, error}] = useLazyQuery(GET_CARD_DETAIL, {
-        variables: {
-            cardId: cardId,
-        }
-    });
 
     const [addCard] = useMutation(CREATE_CARD, {
         refetchQueries: [{
@@ -30,25 +27,47 @@ const AddTask: FC<pageProps> = ({listId, position, cardId}) => {
         },]
     })
 
-    if (data) {
-        const {title, description} = data;
-        methods.setValue('title', title);
-        methods.setValue('description', description);
-    }
 
-    const onSubmit = async ({title, description}: any) => {
+    const [updateCard] = useMutation(UPDATE_CARD, {
+        refetchQueries: [{
+            query: GET_BOARD,
+        },]
+    })
+
+    const onSubmit = async () => {
+        const {title, description} = methods.getValues()
         const payload = {
             listId,
             position,
             title,
             description
         }
-        await addCard({variables: payload});
+
+        if (isUpdateMode)  {
+            await updateCard({variables: {
+                title, description, cardId: cardDetail?._id
+            }});
+            toggleModal();
+        }
+        else {
+            await addCard({variables: payload});
+        }
+
         showToast('Successfully created!', 'success');
         methods.reset();
     };
 
-    const title = !cardId ? 'Add Task' : 'Update Task';
+    const isUpdateMode = !isEmpty(cardDetail);
+
+    useEffect(() => {
+        if (!isEmpty(cardDetail)) {
+            const {title, description} = cardDetail;
+            methods.setValue('title', title);
+            methods.setValue('description', description);
+        }
+    }, [cardDetail]);
+
+    const title = isUpdateMode ? 'Update Task' : 'Add Task';
 
     return (
         <div
@@ -68,12 +87,12 @@ const AddTask: FC<pageProps> = ({listId, position, cardId}) => {
                     <Button className={'block w-full bg-button-secondary hover:bg-button-secondary-hover'}
                             type={'submit'}
                             onClick={methods.handleSubmit(onSubmit)}
-                            text={'Add'}/>
+                            text={isUpdateMode ? 'Update' : 'Add'}/>
                 </form>
             </FormProvider>
 
         </div>
     );
-}
+};
 
-export default AddTask;
+export default AddOrUpdateTaskForm;

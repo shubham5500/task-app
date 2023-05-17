@@ -3,12 +3,13 @@ import {HiOutlineX} from "react-icons/hi";
 
 interface pageProps {
     isOpen: boolean,
+    showFooter?: boolean,
     toggleModal(): void,
-    onSave(): void,
+    onSave?(): void,
     children: JSX.Element,
 }
 
-const Modal: FC<pageProps> = ({isOpen, toggleModal, onSave, children}) => {
+const Modal: FC<pageProps> = ({isOpen, toggleModal, onSave, showFooter = true, children}) => {
 
     return (
         <>
@@ -35,14 +36,17 @@ const Modal: FC<pageProps> = ({isOpen, toggleModal, onSave, children}) => {
                         </div>
 
                         {/* Modal footer */}
-                        <div className="modal-footer mt-4 flex justify-end">
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={onSave}>
+                        {showFooter && <div className="modal-footer mt-4 flex justify-end">
+                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                    onClick={onSave}>
                                 Save
                             </button>
-                            <button className="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded ml-4" onClick={toggleModal}>
+                            <button
+                                className="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded ml-4"
+                                onClick={toggleModal}>
                                 Cancel
                             </button>
-                        </div>
+                        </div>}
 
                     </div>
                 </div>

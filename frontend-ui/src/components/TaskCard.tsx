@@ -7,26 +7,17 @@ import { HiTrash } from "react-icons/hi";
 import {useLazyQuery, useMutation, useQuery} from "@apollo/client";
 import {DELETE_CARD, GET_CARD_DETAIL} from "@/graphql/queries/card.query";
 import {GET_BOARD} from "@/graphql/queries/board.query";
-import Modal from "@/components/Modal";
-import AddTask from "@/components/AddTask";
 
 interface pageProps {
   task: Card,
   index: number,
+  onCardDetailHandler?(cardId: any): void,
 }
 
-const TaskCard: FC<pageProps> = ({ task:{_id, title, position, createdAt, listId}, index }) => {
+const TaskCard: FC<pageProps> = ({ task:{_id, title, position, createdAt, listId}, index, onCardDetailHandler = () => {} }) => {
 
   const getTime = moment(Number(createdAt)).format('llll');
 
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [cardDetails, setCardDetails] = useState({});
-
-  const toggleModal = async () => {
-    await getCardDetail();
-    setIsOpen((flag) => !flag);
-  };
 
   const [deleteCard] = useMutation(DELETE_CARD, {
     refetchQueries: [
@@ -56,15 +47,7 @@ const TaskCard: FC<pageProps> = ({ task:{_id, title, position, createdAt, listId
           ref={provided.innerRef}
         >
           <li className="flex px-4 py-4">
-            <Modal isOpen={isOpen}
-                   onSave={() => {}}
-                   toggleModal={toggleModal}>
-              <AddTask position={position}
-                       cardId={_id}
-                       cardDetails={cardDetails}
-                       listId={listId}/>
-            </Modal>
-            <div className="flex flex-1 flex-col" onClick={toggleModal}>
+            <div className="flex flex-1 flex-col" onClick={() => onCardDetailHandler(_id)}>
               <div className="flex justify-between text-base font-medium text-gray-900 mb-4">
                 <h3>
                   <a href="#">{title}</a>

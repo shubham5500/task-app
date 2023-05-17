@@ -1,26 +1,28 @@
 import {gql} from "@apollo/client";
 
 export const UPDATE_CARD = gql`
-  mutation (
-    $cardId: ID!
-    $title: String
-    $description: String
-    $sourcePosition: Int
-    $destinationPosition: Int
-    $sourceListId: ID
-    $destinationListId: ID
-  ) {
-    updateCard(
-      cardId: $cardId
-      sourcePosition: $sourcePosition
-      destinationPosition: $destinationPosition
-      sourceListId: $sourceListId
-      destinationListId: $destinationListId
+    mutation (
+        $cardId: ID!
+        $title: String
+        $description: String
+        $sourcePosition: Int
+        $destinationPosition: Int
+        $sourceListId: ID
+        $destinationListId: ID
     ) {
-      _id
-      listId
+        updateCard(
+            cardId: $cardId
+            sourcePosition: $sourcePosition
+            title: $title
+            description:  $description
+            destinationPosition: $destinationPosition
+            sourceListId: $sourceListId
+            destinationListId: $destinationListId
+        ) {
+            _id
+            listId
+        }
     }
-  }
 `;
 
 export const CREATE_CARD = gql`
@@ -45,6 +47,10 @@ export const GET_CARD_DETAIL = gql`
             _id
             title
             description
+            listId
+            position
+            createdAt
+            updatedAt
         }
     }
 `
