@@ -33,7 +33,9 @@ const List: FC<pageProps> = ({ list, index }) => {
               className={"min-h-full"}
               ref={provided.innerRef}>
                 {list.cards.sort(sortFn).map((task, index) => (
-                  <TaskCard key={task._id} task={task} index={task.position}/>
+                  <TaskCard key={task._id}
+                            task={task}
+                            index={task.position}/>
                 ))}
                 {provided.placeholder}
                 <AddTask listId={list._id} position={list.cards.length}/>

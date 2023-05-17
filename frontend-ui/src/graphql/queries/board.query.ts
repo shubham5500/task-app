@@ -12,6 +12,7 @@ export const GET_BOARD = gql`
                 cards {
                     _id
                     title
+                    listId
                     position
                     description
                     createdAt

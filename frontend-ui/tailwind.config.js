@@ -35,6 +35,7 @@ module.exports = {
         'text-dark': '#2d3748',
         // Button colors
         'button-primary': '#4c51bf',
+        'danger': '#F15412',
         'button-primary-hover': '#434190',
         'button-secondary': '#cbd5e0',
         'button-secondary-hover': '#a0aec0',
