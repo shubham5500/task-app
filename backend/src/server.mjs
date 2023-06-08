@@ -29,7 +29,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// console.log(process.env.NODE_ENV)
+console.log(process.env.MONGODB_URI_LOCAL)
 await mongoose.connect(process.env.MONGODB_URI_LOCAL);
 
 const authMiddleware = async (req, res, next) => {
