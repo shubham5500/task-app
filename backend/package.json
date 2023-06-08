@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon --es-module-specifier-resolution=node src/index.js",
-    "server-start": "src/index.js"
+    "server-start": "node --es-module-specifier-resolution=node src/index.js"
   },
   "author": "",
   "license": "ISC",
