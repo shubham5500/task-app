@@ -1,6 +1,6 @@
 // todo: Add validations
 
-import {CustomError} from "../utils/error.util";
+import {CustomError} from "../utils/error.util.js";
 
 const listResolver = {
   List: {
