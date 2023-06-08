@@ -14,6 +14,13 @@ const cardSchema = new mongoose.Schema({
     default: 1,
     required: true,
   },
+  label: [{
+   type: String,
+  }],
+  // user: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'Users'
+  // },
   listId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'List',
