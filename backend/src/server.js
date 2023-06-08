@@ -7,7 +7,7 @@ import cors from "cors";
 import {mergeTypeDefs, mergeResolvers} from "@graphql-tools/merge";
 import {ApolloServer, } from "apollo-server-express";
 import {listTypeDefs} from "./schema/list.schema.js";
-import {boardTypeDef} from "./schema/board.schema";
+import {boardTypeDef} from "./schema/board.schema.js";
 import {cardTypeDef} from "./schema/card.schema";
 import {boardResolver} from "./resolvers/board.resolver";
 import {BoardModel} from "./models/board.model";

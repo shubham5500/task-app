@@ -2,12 +2,12 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "src/server",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --es-module-specifier-resolution=node src/server",
-    "server-start": "node --experimental-modules --experimental-remapped-modules src/server"
+    "start": "nodemon --es-module-specifier-resolution=node src/server.js",
+    "server-start": "nodemon --es-module-specifier-resolution=node src/server.js"
   },
   "author": "",
   "license": "ISC",
@@ -27,5 +27,8 @@
   },
   "engines": {
     "node": ">=14.20.1"
+  },
+  "devDependencies": {
+    "esm": "^3.2.25"
   }
 }
