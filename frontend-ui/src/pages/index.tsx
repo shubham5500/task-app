@@ -11,3 +11,6 @@ export default function Home() {
     </>
   )
 }
+// export async function getServerSideProps() {
+//     console.log({pp: process.env})
+// }

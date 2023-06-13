@@ -31,8 +31,8 @@ const List: FC<pageProps> = ({ list, index }) => {
     setModalData({isOpen: false, cardDetail: {}});
     return;
   }
-  const onCardDetailHandler = async (cardId?: any) => {
 
+  const onCardDetailHandler = async (cardId?: any) => {
     const res = await getCardDetail({
       variables: {
         cardId
@@ -54,7 +54,7 @@ const List: FC<pageProps> = ({ list, index }) => {
           </div>
           <Modal isOpen={modalData.isOpen}
                  showFooter={false}
-                 toggleModal={() => onCardDetailHandler()}>
+                 toggleModal={() => toggleModal()}>
             <div>
               <AddOrUpdateTaskForm listId={list._id}
                        cardDetail={modalData.cardDetail}

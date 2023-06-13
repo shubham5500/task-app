@@ -14,6 +14,10 @@ import AddList from "@/components/AddList";
 
 const BoardComponent = () => {
 
+  useEffect(() => {
+    console.log({ll: process.env})
+  }, [])
+
   const { loading, error, data } = useQuery(GET_BOARD);
 
   const [
@@ -41,7 +45,7 @@ const BoardComponent = () => {
   });
 
 
-  const boardData = data && cloneDeep(data.getBoards[0]);
+  const boardData = data && cloneDeep(data.getBoards[0]) || [];
 
   const handleDragEnd = async (result: {
     destination: any;
@@ -110,7 +114,7 @@ const BoardComponent = () => {
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
-              {boardData.lists.sort(sortFn).map((list: List) => (
+              {boardData?.lists?.sort(sortFn).map((list: List) => (
                 <ListComponent
                   key={list._id}
                   list={list}
